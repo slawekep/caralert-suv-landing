@@ -1,0 +1,7 @@
+Ten folder będzie zawierał zdjęcia samochodów.
+Dla każdego modelu należy utworzyć odpowiednie zdjęcie, np.:
+- toyota-rav4-hybrid.jpg
+- honda-crv-hybrid.jpg
+- mazda-cx5-benzyna.jpg
+itd.
+
