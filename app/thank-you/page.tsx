@@ -1,7 +1,21 @@
+"use client"
+
+import { useEffect } from "react"
 import SiteHeader from "@/components/site-header"
 import SiteFooter from "@/components/site-footer"
+import { trackFacebookPixelEvent } from "@/lib/facebook-pixel"
 
 export default function ThankYouPage() {
+  useEffect(() => {
+    // Wywołaj zdarzenie Lead po załadowaniu strony
+    trackFacebookPixelEvent("Lead", {
+      content_name: "Formularz jazdy próbnej",
+      content_category: "Jazda próbna",
+      value: 1,
+      currency: "PLN",
+    })
+  }, [])
+
   return (
     <>
       <SiteHeader />

@@ -55,7 +55,14 @@ export default function ContactSection() {
         throw new Error(errorData.error || "Wystąpił problem z wysłaniem formularza")
       }
 
-      // Zamiast ustawiać stan success, przekieruj na stronę potwierdzenia
+      // Śledzenie zdarzenia Facebook Pixel - wysłanie formularza
+      // trackFacebookPixelEvent("Lead", {
+      //   content_name: "Formularz jazdy próbnej",
+      //   content_category: "Jazda próbna",
+      //   car_model: formData.carModel,
+      // })
+
+      // Przekieruj na stronę potwierdzenia
       router.push("/thank-you")
     } catch (error) {
       console.error("Error:", error)
