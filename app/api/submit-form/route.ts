@@ -1,23 +1,67 @@
 import { NextResponse } from "next/server"
+import { API_CONFIG, mapFormDataToApiPayload } from "@/lib/api-config"
 
 export async function POST(request: Request) {
   try {
     // Pobierz dane z formularza
     const formData = await request.json()
 
-    // Tutaj możesz dodać logikę do zapisywania danych w bazie danych,
-    // wysyłania e-maili, itp.
+    // Mapowanie danych formularza do wymaganej struktury API
+    const apiPayload = mapFormDataToApiPayload(formData)
 
-    // Przykładowa walidacja
-    if (!formData.email || !formData.firstName || !formData.lastName || !formData.phone || !formData.carModel) {
+    // Walidacja danych
+    if (
+      !apiPayload.first_name ||
+      !apiPayload.surname ||
+      !apiPayload.email ||
+      !apiPayload.phone_number ||
+      !apiPayload.car_model
+    ) {
       return NextResponse.json({ error: "Wszystkie wymagane pola muszą być wypełnione" }, { status: 400 })
     }
 
-    // Symulacja opóźnienia przetwarzania (można usunąć w produkcji)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    console.log("Wysyłanie danych do API:", apiPayload)
+
+    // Wysłanie danych do API
+    const apiResponse = await fetch(API_CONFIG.URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${API_CONFIG.TOKEN}`,
+      },
+      body: JSON.stringify(apiPayload),
+    })
+
+    // Sprawdzenie odpowiedzi z API
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.text()
+      console.error("Błąd API:", apiResponse.status, errorData)
+      return NextResponse.json(
+        {
+          error: "Wystąpił błąd podczas komunikacji z serwerem",
+          details: errorData,
+        },
+        { status: apiResponse.status },
+      )
+    }
+
+    // Próba parsowania odpowiedzi jako JSON
+    let responseData
+    try {
+      responseData = await apiResponse.json()
+    } catch (e) {
+      // Jeśli odpowiedź nie jest w formacie JSON, użyj tekstu
+      responseData = { message: await apiResponse.text() }
+    }
+
+    console.log("Odpowiedź z API:", responseData)
 
     // Zwróć sukces
-    return NextResponse.json({ success: true, message: "Formularz został pomyślnie wysłany" })
+    return NextResponse.json({
+      success: true,
+      message: "Formularz został pomyślnie wysłany",
+      apiResponse: responseData,
+    })
   } catch (error) {
     console.error("Error processing form:", error)
     return NextResponse.json(

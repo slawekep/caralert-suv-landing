@@ -1,18 +1,21 @@
 // Konfiguracja API
 export const API_CONFIG = {
-  url: process.env.API_URL || "https://backend.osmg.pl/index.php",
-  token: process.env.API_TOKEN || "bda551d4-ff34-4c31-b894-39dfecfbc8bc",
+  URL: process.env.API_URL || "https://backend.osmg.pl/index.php",
+  TOKEN: process.env.API_TOKEN || "bda551d4-ff34-4c31-b894-39dfecfbc8bc",
 }
 
-// Mapowanie danych z formularza na format API
-export function mapFormDataToApiFormat(formData: {
-  firstName: string
-  lastName: string
+// Typy danych dla API
+export interface ApiPayload {
+  first_name: string
+  surname: string
   email: string
-  phone: string
-  carModel: string
-  message?: string
-}) {
+  phone_number: string
+  car_model: string
+  message: string
+}
+
+// Funkcja do mapowania danych formularza na format API
+export function mapFormDataToApiPayload(formData: any): ApiPayload {
   return {
     first_name: formData.firstName,
     surname: formData.lastName,
